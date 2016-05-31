@@ -1,0 +1,81 @@
+//First scrap articles and return them to browser for rendering here.
+$.getJSON('/scrape', function(data) {
+  console.log("data=",data);
+  for (var i = 0; i<data.length; i++){
+    $('#articles').append('<h2><p data-id="' + data[i]._id + '">'+ data[i].title + '</p></h2>'+'<a href='+data[i].link +'>'+data[i].link+"<br />");
+    $('#articles').append("____________________________________________________________________________________________________________________");
+  }
+    $('#articles').append("____________________________________________________________________________________________________________________");
+});
+
+//When the article is clicked, the note input (or display) box is displayed with
+//either a savenote or deletenote button as appropriate.
+$(document).on('click', 'p', function(){
+  $('#notes').empty();
+  var thisId = $(this).attr('data-id');
+
+  $.ajax({
+    method: "GET",
+    url: "/articles/" + thisId,
+  })
+    .done(function( data ) {
+      //console.log("app.js data=",data);
+      $('#notes').append('<h2>' + data.title + '</h2>');
+      $('#notes').append('<input id="titleinput" name="title" >');
+      $('#notes').append('<textarea id="bodyinput" name="body"></textarea>');
+      
+      //lets see if there is a note for this article and display it with delete btn
+      //or if not allow for entry of a note and save with save btn. 
+      //Color of input box changes depending on existence of note or not. 
+      if(data.note){
+        
+        $('#titleinput').val(data.note.title);
+        $('#bodyinput').val(data.note.body);
+        $('#notes').append('<button data-id="' + data._id + '" id="deletenote">Delete Note</button>');
+        $('#bodyinput,#titleinput').css('background-color', '#99ddff');
+      }else{
+        $('#notes').append('<button data-id="' + data._id + '" id="savenote">Save Note</button>');
+        $('#bodyinput,#titleinput').css('background-color', '#99ddff');
+      }
+    });
+});
+//When the save note button is clicked POST to savenote on server
+$(document).on('click', '#savenote', function(){
+  var thisId = $(this).attr('data-id');
+
+  $.ajax({
+    method: "POST",
+    url: "/savenote/" + thisId,
+    data: {
+      title: $('#titleinput').val(),
+      body: $('#bodyinput').val()
+    }
+  })
+    .done(function( data ) {
+      console.log(data);
+      $('#notes').empty();
+    });
+
+
+  $('#titleinput').val("");
+  $('#bodyinput').val("");
+
+});
+//When the delete note button is clicked Post to deletenote on server
+$(document).on('click', '#deletenote', function(){
+  var thisId = $(this).attr('data-id');
+
+  $.ajax({
+    method: "POST",
+    url: "/deletenote/" + thisId,
+  })
+    .done(function( data ) {
+      console.log(data);
+      $('#notes').empty();
+    });
+
+
+  $('#titleinput').val("");
+  $('#bodyinput').val("");
+
+});
