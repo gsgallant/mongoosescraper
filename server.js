@@ -164,7 +164,6 @@ app.post('/dropdb', function(req,res){
 															++removedArticles;
 															console.log(removedArticles+" Total Articles removed");
 														}//close else
-												//console.log(removed + " articles removed");
 												})//close .exec
 										}//close if
 						}//close for

@@ -1,12 +1,21 @@
 //First scrap articles and return them to browser for rendering here.
-$.getJSON('/scrape', function(data) {
-  console.log("data=",data);
-  for (var i = 0; i<data.length; i++){
-    $('#articles').append('<h2><p data-id="' + data[i]._id + '">'+ data[i].title + '</p></h2>'+'<a href='+data[i].link +' target = "_blank">'+data[i].link+"<br />");
-    $('#articles').append("____________________________________________________________________________________________________________________");
-  }
-    $('#articles').append("____________________________________________________________________________________________________________________");
-});
+
+  $.getJSON('/scrape', function(data) {
+    console.log("data=",data);
+    for (var i = 0; i<data.length; i++){
+      //if there is a note on this article, attach *note* to the title to signify its existence to the user.
+      if(data[i].note){
+        noteExists = '<span style="color: yellow"><sup> *note attached*</sup></span>'
+        }else{
+          noteExists = "";
+      }
+      $('#articles').append('<h2><p data-id="' + data[i]._id + '">' + data[i].title + noteExists+'</p></h2>'+'<a href='+data[i].link +' target = "_blank">'+data[i].link+"<br />");
+      $('#articles').append("____________________________________________________________________________________________________________________");
+    }
+      $('#articles').append("____________________________________________________________________________________________________________________");
+  });
+
+//call scape function
 
 //When the article is clicked, the note input (or display) box is displayed with
 //either a savenote or deletenote button as appropriate.
@@ -56,10 +65,10 @@ $(document).on('click', '#savenote', function(){
       $('#notes').empty();
     });
 
-
+    location.reload();
   $('#titleinput').val("");
   $('#bodyinput').val("");
-
+  
 });
 //When the delete note button is clicked Post to deletenote on server
 $(document).on('click', '#deletenote', function(){
@@ -70,14 +79,15 @@ $(document).on('click', '#deletenote', function(){
     url: "/deletenote/" + thisId,
   })
     .done(function( data ) {
+      
       console.log(data);
       $('#notes').empty();
     });
 
-
+  location.reload();
   $('#titleinput').val("");
   $('#bodyinput').val("");
-
+  
 });
 
 $(document).on('click', '#cnnlogo', function(){
