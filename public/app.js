@@ -2,7 +2,7 @@
 $.getJSON('/scrape', function(data) {
   console.log("data=",data);
   for (var i = 0; i<data.length; i++){
-    $('#articles').append('<h2><p data-id="' + data[i]._id + '">'+ data[i].title + '</p></h2>'+'<a href='+data[i].link +'>'+data[i].link+"<br />");
+    $('#articles').append('<h2><p data-id="' + data[i]._id + '">'+ data[i].title + '</p></h2>'+'<a href='+data[i].link +' target = "_blank">'+data[i].link+"<br />");
     $('#articles').append("____________________________________________________________________________________________________________________");
   }
     $('#articles').append("____________________________________________________________________________________________________________________");
