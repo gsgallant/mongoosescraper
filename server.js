@@ -13,7 +13,7 @@ app.use(bodyParser.urlencoded({
 app.use(express.static('public'));
 
 //Database configuration
-//mongoose.connect('mongodb://localhost/mongoosescraper');
+// mongoose.connect('mongodb://localhost/mongoosescraper');
 mongoose.connect('mongodb://gsgallant:mongoose1@ds015953.mlab.com:15953/mongoosescraper');
 var db = mongoose.connection;
 
@@ -131,6 +131,18 @@ app.post('/deletenote/:id', function(req, res){
 			});
 });
 
+app.post('/dropdb', function(req,res){
+	Article.remove({}, function(err) { 
+   console.log('collection removed') 
+			
+			Note.remove({}, function(err) { 
+		   console.log('collection removed') 
+
+			});
+
+	});
+	res.end();
+})
 //start express server
 app.listen(PORT, function() {
     console.log("Server listening on PORT: " + PORT);

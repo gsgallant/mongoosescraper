@@ -79,3 +79,18 @@ $(document).on('click', '#deletenote', function(){
   $('#bodyinput').val("");
 
 });
+
+$(document).on('click', '#cnnlogo', function(){
+$('#head').css("color", "white");
+  $.ajax({
+    method: "POST",
+    url: "/dropdb/"
+  })
+    .done(function( data ) {
+      console.log("back from drop");
+      $('#head').css("color", "black");
+      location.reload();
+    
+    });
+
+});
