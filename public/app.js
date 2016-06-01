@@ -89,8 +89,9 @@ $('#head').css("color", "white");
     .done(function( data ) {
       console.log("back from drop");
       $('#head').css("color", "black");
+      //this will force a page refresh which will force a GET to '/' and that will force
+      //the /scrape because it is the first thing that the JS does upon starting up.  ;-)
       location.reload();
-    
     });
 
 });

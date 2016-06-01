@@ -12,9 +12,16 @@ app.use(bodyParser.urlencoded({
 }));
 app.use(express.static('public'));
 
-//Database configuration
-// mongoose.connect('mongodb://localhost/mongoosescraper');
-mongoose.connect('mongodb://gsgallant:mongoose1@ds015953.mlab.com:15953/mongoosescraper');
+
+var database = {
+	
+	local : 'mongodb://localhost/mongoosescraper',
+	remote : 'mongodb://gsgallant:mongoose1@ds015953.mlab.com:15953/mongoosescraper'
+}
+//This line is for cutting/pasting either local or remote for the choice of database.
+//  local during testing/remote at deployment
+
+mongoose.connect(database.remote);
 var db = mongoose.connection;
 
 db.on('error', function (err) {
@@ -132,17 +139,39 @@ app.post('/deletenote/:id', function(req, res){
 });
 
 app.post('/dropdb', function(req,res){
-	Article.remove({}, function(err) { 
-   console.log('collection removed') 
-			
-			Note.remove({}, function(err) { 
-		   console.log('collection removed') 
-
-			});
-
-	});
-	res.end();
-})
+//this function will delete all articles except those that have user notes.
+//once it goes back to the client, the page will be refreshed which forces
+//a new GET for the latest articles on the CNN Top Stores area of their home page.
+	Article.find({})
+		.populate('note')
+		.exec(function(err, doc){
+				if (err){
+					console.log(err);
+				} else {
+							var removedArticles = 0;
+						 for(i=0;i<doc.length;i++){
+							// console.log(doc[i]._id);
+							// console.log(doc[i].note);
+							//if there is no note, we can remove the article from the db
+							//but if there is a note, move on to the next article.
+										
+										if(doc[i].note==undefined){
+												Article.find({'_id' : doc[i]._id}).remove()
+												.exec(function(err, doc){
+														if (err){
+															console.log(err);
+														}else{
+															++removedArticles;
+															console.log(removedArticles+" Total Articles removed");
+														}//close else
+												//console.log(removed + " articles removed");
+												})//close .exec
+										}//close if
+						}//close for
+				}//close else 
+		})//close .exec
+res.end();
+});//close drop route
 //start express server
 app.listen(PORT, function() {
     console.log("Server listening on PORT: " + PORT);
