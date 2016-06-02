@@ -20,7 +20,7 @@ var database = {
 }
 //This line is for cutting/pasting either local or remote for the choice of database.
 //  local during testing/remote at deployment
-var whichDb = database.remote
+var whichDb = database.remote;
 mongoose.connect(whichDb);
 
  db = mongoose.connection;
