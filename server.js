@@ -20,15 +20,16 @@ var database = {
 }
 //This line is for cutting/pasting either local or remote for the choice of database.
 //  local during testing/remote at deployment
+var whichDb = database.remote
+mongoose.connect(whichDb);
 
-mongoose.connect(database.remote);
-var db = mongoose.connection;
+ db = mongoose.connection;
 
 db.on('error', function (err) {
-console.log('Mongoose Error: ', err);
+	console.log('Mongoose Error: ', err);
 });
 db.once('open', function () {
-console.log('Mongoose connection successful.');
+	console.log('DB connection: ',whichDb);
 });
 var PORT = process.env.PORT || 8080; // Sets an initial port. We'll use this later in our listener
 //Require Schemas
@@ -36,13 +37,6 @@ var Note = require('./models/Note.js');
 var Article = require('./models/Article.js');
 
 // Routes
-
-//**** the '/' route was commented out because the index.html is in a static route
-// seen above app.use(......'public')
-
-// app.get('/', function(req, res) {
-//   res.send(index.html);
-// });
 
 //scrape articles, place in MongoDB, and return them in doc for rendering in browser
 app.get('/scrape', function(req, res){
