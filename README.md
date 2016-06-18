@@ -10,7 +10,7 @@
 </p>
 
 #Technologies used:
-HTML, CSS, JQuery, MongoDB, Mongoose, Cheerio
+HTML, CSS, JQuery, Nodejs, MongoDB, Mongoose, Cheerio
 
 
 #Comments
